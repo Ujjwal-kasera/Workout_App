@@ -10,7 +10,5 @@
                 android:color="@color/colorAccent">
             </solid>
         </shape>
-
-
     </item>
 </layer-list>
