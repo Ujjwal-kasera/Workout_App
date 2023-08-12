@@ -1,5 +1,7 @@
 package com.example.workoutapp
 
+import android.media.MediaPlayer
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -25,6 +27,8 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var exerciseProgress : Int = 0
 
     private var tts : TextToSpeech? = null
+    private var player : MediaPlayer? = null
+    private var soundUri : Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,10 +47,19 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         bindingExercise?.toolbarExercise?.setNavigationOnClickListener(){
             onBackPressed()
         }
+        try {
+            soundUri = Uri.parse("android.resource://com.example.workoutapp/"
+                    + R.raw.press_start)
+            player = MediaPlayer.create(applicationContext,soundUri)
+            player?.isLooping = false
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
         setupRestView()
     }
 
     private fun setupRestView(){
+        player?.start()
         bindingExercise?.flRestView?.visibility = View.VISIBLE
         bindingExercise?.tvTitle?.visibility = View.VISIBLE
         bindingExercise?.tvUpcomingLabel?.visibility = View.VISIBLE
@@ -141,6 +154,10 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         if(tts!=null){
             tts!!.stop()
             tts!!.shutdown()
+        }
+
+        if(player!=null){
+            player?.stop()
         }
 
         bindingExercise = null
