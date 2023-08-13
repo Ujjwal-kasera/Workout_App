@@ -9,6 +9,7 @@ import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.workoutapp.databinding.ActivityExerciseBinding
 import java.util.Locale
 
@@ -29,6 +30,8 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var tts : TextToSpeech? = null
     private var player : MediaPlayer? = null
     private var soundUri : Uri? = null
+
+    private var exerciseAdapter : ExerciseStatusAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +59,17 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             e.printStackTrace()
         }
         setupRestView()
+        /** As in this we are using exerciseList so make sure that we calling the function after
+         * assigning the exerciseList.
+         * Alternative would be checking if our list is empty and if is not then only call function.*/
+        setupExerciseStatusRecyclerView()
+    }
+
+    private fun setupExerciseStatusRecyclerView(){
+        bindingExercise?.rvExerciseStatus?.layoutManager=
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false)
+        exerciseAdapter = ExerciseStatusAdapter(exerciseList!!)
+        bindingExercise?.rvExerciseStatus?.adapter = exerciseAdapter
     }
 
     private fun setupRestView(){
@@ -87,6 +101,11 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
             override fun onFinish() {
                 currExercisePosition++
+                exerciseList!![currExercisePosition].setIsSelected(true)
+                /** It will notify the recycler that data has changed and load the view again
+                 * based on changed values
+                 * We are notifying the view as it is data driven,we are not changing it manually */
+                exerciseAdapter!!.notifyDataSetChanged()
                 setupExerciseView()
             }
         }.start()
@@ -128,6 +147,9 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             }
 
             override fun onFinish() {
+                exerciseList!![currExercisePosition].setIsSelected(false)
+                exerciseList!![currExercisePosition].setIsCompleted(true)
+                exerciseAdapter!!.notifyDataSetChanged()
                 if(currExercisePosition < (exerciseList?.size!!-1)){
                     setupRestView()
                 }else{
