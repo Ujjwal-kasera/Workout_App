@@ -1,5 +1,6 @@
 package com.example.workoutapp
 
+import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -20,11 +21,11 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var currExercisePosition = -1
 
     private var restTimer : CountDownTimer? = null
-    private val restDuration : Long = 3000
+    private val restDuration : Long = 1
     private var restProgress : Int = 0
 
     private var exerciseTimer : CountDownTimer? = null
-    private val exerciseDuration : Long = 3000
+    private val exerciseDuration : Long = 1
     private var exerciseProgress : Int = 0
 
     private var tts : TextToSpeech? = null
@@ -37,19 +38,19 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         super.onCreate(savedInstanceState)
         bindingExercise=ActivityExerciseBinding.inflate(layoutInflater)
         setContentView(bindingExercise?.root)
+
         setSupportActionBar(bindingExercise?.toolbarExercise)
 
         if(supportActionBar != null){
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
+        bindingExercise?.toolbarExercise?.setNavigationOnClickListener(){
+            onBackPressed()
+        }
 
         exerciseList = Constants.defaultExerciseList()
 
         tts= TextToSpeech(this,this)
-
-        bindingExercise?.toolbarExercise?.setNavigationOnClickListener(){
-            onBackPressed()
-        }
         try {
             soundUri = Uri.parse("android.resource://com.example.workoutapp/"
                     + R.raw.press_start)
@@ -92,11 +93,11 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private fun setRestProgressBar() {
         bindingExercise?.progressBar?.progress = restProgress
-        restTimer = object : CountDownTimer(restDuration,1000){
+        restTimer = object : CountDownTimer(restDuration*1000,1000){
             override fun onTick(millisUntilFinished: Long) {
                 restProgress++
-                bindingExercise?.progressBar?.progress = ((restDuration/1000 - restProgress).toInt())
-                bindingExercise?.tvTimer?.text = (restDuration/1000 - restProgress).toString()
+                bindingExercise?.progressBar?.progress = ((restDuration - restProgress).toInt())
+                bindingExercise?.tvTimer?.text = (restDuration- restProgress).toString()
             }
 
             override fun onFinish() {
@@ -135,27 +136,28 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private fun setExerciseProgressBar() {
         bindingExercise?.progressBarExercise?.progress = exerciseProgress
-        exerciseTimer = object : CountDownTimer(exerciseDuration,1000){
+        exerciseTimer = object : CountDownTimer(exerciseDuration*1000,1000){
             override fun onTick(millisUntilFinished: Long) {
                 exerciseProgress++
 
                 bindingExercise?.progressBarExercise?.progress =
-                    ((exerciseDuration/1000 - exerciseProgress).toInt())
+                    ((exerciseDuration - exerciseProgress).toInt())
 
                 bindingExercise?.tvTimerExercise?.text =
-                    (exerciseDuration/1000 - exerciseProgress).toString()
+                    (exerciseDuration - exerciseProgress).toString()
             }
 
             override fun onFinish() {
-                exerciseList!![currExercisePosition].setIsSelected(false)
-                exerciseList!![currExercisePosition].setIsCompleted(true)
-                exerciseAdapter!!.notifyDataSetChanged()
+
                 if(currExercisePosition < (exerciseList?.size!!-1)){
+                    exerciseList!![currExercisePosition].setIsSelected(false)
+                    exerciseList!![currExercisePosition].setIsCompleted(true)
+                    exerciseAdapter!!.notifyDataSetChanged()
                     setupRestView()
                 }else{
-                    Toast.makeText(this@ExerciseActivity,
-                        "Congratulation,You have completed the Exercise",
-                        Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this@ExerciseActivity,FinishActivity::class.java)
+                    startActivity(intent)
+                    finish()
                 }
             }
         }.start()
