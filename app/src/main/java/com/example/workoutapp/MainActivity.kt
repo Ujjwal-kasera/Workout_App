@@ -13,8 +13,13 @@ class MainActivity : AppCompatActivity() {
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
-        binding?.flStart?.setOnClickListener(){
+        binding?.flStart?.setOnClickListener{
             val intent = Intent(this,ExerciseActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding?.flBMI?.setOnClickListener{
+            val intent = Intent(this,BmiActivity::class.java)
             startActivity(intent)
         }
     }

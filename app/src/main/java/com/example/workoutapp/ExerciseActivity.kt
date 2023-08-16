@@ -1,5 +1,6 @@
 package com.example.workoutapp
 
+import android.app.Dialog
 import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
@@ -9,9 +10,9 @@ import android.os.CountDownTimer
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.workoutapp.databinding.ActivityExerciseBinding
+import com.example.workoutapp.databinding.DialogCustomBackConfirmationBinding
 import java.util.Locale
 
 class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
@@ -45,7 +46,8 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
         bindingExercise?.toolbarExercise?.setNavigationOnClickListener(){
-            onBackPressed()
+            this@ExerciseActivity.
+            customDialogForBackButton()
         }
 
         exerciseList = Constants.defaultExerciseList()
@@ -64,6 +66,28 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
          * assigning the exerciseList.
          * Alternative would be checking if our list is empty and if is not then only call function.*/
         setupExerciseStatusRecyclerView()
+    }
+
+    override fun onBackPressed() {
+        customDialogForBackButton()
+        /** If we implement super.onBackPressed() then despite of btn user select, it will call the
+         * back button and our screen will be finished */
+        // super.onBackPressed()
+    }
+
+    private fun customDialogForBackButton() {
+        val customDialog = Dialog(this)
+        val dialogBinding = DialogCustomBackConfirmationBinding.inflate(layoutInflater)
+        customDialog.setContentView(dialogBinding.root)
+        customDialog.setCanceledOnTouchOutside(false)
+        dialogBinding.btnYes.setOnClickListener {
+            this@ExerciseActivity.finish()
+            customDialog.cancel()
+        }
+        dialogBinding.btnNo.setOnClickListener {
+            customDialog.cancel()
+        }
+        customDialog.show()
     }
 
     private fun setupExerciseStatusRecyclerView(){

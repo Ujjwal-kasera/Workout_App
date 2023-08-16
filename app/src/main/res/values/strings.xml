@@ -10,4 +10,14 @@
     <string name="you_have_done_the_workout">You have done the workout!</string>
     <string name="finish">FINISH</string>
     <string name="image">Image</string>
+    <string name="are_you_sure">Are you Sure?</string>
+    <string name="this_will_stop_your_workout_you_ve_come_far_are_you_sure_to_quit">This will stop your Workout. You\'ve come far, are you sure to quit?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="bmi">BMI</string>
+    <string name="your_bmi">Your BMI</string>
+    <string name="weight_in_kg">WEIGHT (in Kg)</string>
+    <string name="height_in_cm">Height (in cm)</string>
+    <string name="calculate">Calculate</string>
+    <string name="calculator">Calculator</string>
 </resources>
