@@ -26,4 +26,6 @@
     <string name="height_in_feet">Height (in Feet)</string>
     <string name="height_in_inch">Height (in Inch)</string>
     <string name="history">History</string>
+    <string name="exercise_completed">EXERCISE COMPLETED</string>
+    <string name="no_data_available">NO DATA AVAILABLE</string>
 </resources>
